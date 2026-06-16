@@ -139,18 +139,16 @@ Cydia-style store.  It does NOT require a jailbreak on recent iOS versions.
 2. Copy `ios/autotouch_farm.lua` to the AutoTouch scripts directory.
 3. Rename it to something short like `last_asylum.lua`.
 
-### Step 3 — Calibrate coordinates
+### Step 3 — Fine-tune coordinates (if needed)
+
+The script ships pre-calibrated for **iPhone 17 Pro Max** (440 × 956 logical
+points).  It should work out of the box.  If a tap lands slightly off after
+a game update:
 
 1. Open Last Asylum: Plague on your iPhone.
-2. In AutoTouch, tap **Record** and tap:
-   - Each resource building bubble
-   - The scavenge button
-   - The hospital button
-   - The quest tab
-3. Stop recording and note the (x, y) printed for each tap.
-4. Open `ios/autotouch_farm.lua` in a text editor.
-5. Replace the coordinate values near the top of the file with your
-   recorded coordinates.
+2. In AutoTouch, tap **Record** and tap the element that missed.
+3. Tap **Stop** — the log shows the exact (x, y) for that tap.
+4. Open `ios/autotouch_farm.lua` in a text editor and update that coordinate.
 
 ### Step 4 — Run the script
 

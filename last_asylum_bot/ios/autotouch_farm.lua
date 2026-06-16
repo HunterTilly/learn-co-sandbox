@@ -1,81 +1,101 @@
 --[[
   Last Asylum: Plague — iPhone Farming Script
   ============================================
-  Platform : iPhone (any model) via AutoTouch app
-  App store : AutoTouch is available as a paid app. Install it, then
-              load this script from the AutoTouch script browser.
+  Device   : iPhone 17 Pro Max
+  Screen   : 440 × 956 logical points  (2868 × 1320 px physical, 3× scale, 460 ppi)
+  Platform : AutoTouch app (no jailbreak required)
 
-  HOW TO CALIBRATE:
-    1. Open Last Asylum: Plague on your iPhone.
-    2. Open AutoTouch and start recording.
-    3. Tap each building / button once in game order (collect grain,
-       collect lumber, collect herbs, collect medicine, open quests,
-       claim quests).
-    4. Stop recording.  AutoTouch shows the (x, y) coordinates.
-    5. Replace the coordinate values below with your recorded ones.
-       Coordinates are in logical points (not pixels) — they scale
-       automatically across iPhone models.
+  All coordinates below are in LOGICAL POINTS, not pixels.
+  AutoTouch uses logical points so coordinates always match what you see
+  on screen regardless of pixel density.
 
-  DEFAULT COORDS assume iPhone 14 Pro (393 × 852 logical points).
-  Scale for other models:
-    iPhone SE 3rd gen   : ×0.74 / ×0.82
-    iPhone 15 Pro Max   : ×1.04 / ×1.04
-    iPhone 13 mini      : ×0.74 / ×0.85
+  FINE-TUNING:
+    If a tap lands slightly off after a game update or UI change:
+    1. Open Last Asylum on your iPhone.
+    2. Open AutoTouch → tap Record, tap the element, tap Stop.
+    3. The log shows the exact (x, y) for that tap — update the value below.
 
   RUNNING:
-    - Open the game, navigate to your base / home screen.
-    - Switch to AutoTouch and tap ▶ to run this script.
-    - The script loops indefinitely; press the AutoTouch stop button to halt.
+    1. Open the game and navigate to your base / home screen.
+    2. Switch to AutoTouch and tap ▶ next to this script.
+    3. The script runs in the background while the game is in the foreground.
+    4. Press the AutoTouch stop button (■) to halt at any time.
 ]]
 
 -- =========================================================================
--- CONFIG — edit these to match YOUR screen
+-- CONFIG — iPhone 17 Pro Max (440 × 956 logical points)
 -- =========================================================================
 
 local CYCLES           = 0      -- 0 = run forever; set e.g. 10 for 10 cycles
-local CYCLE_SLEEP_SEC  = 60     -- seconds between full cycles
+local CYCLE_SLEEP_SEC  = 60     -- seconds between full farming cycles
 local TAP_HOLD_MS      = 80     -- milliseconds each tap is held down
 
--- Grain Farm collect bubble position
-local FARM_X, FARM_Y           = 207, 535
--- Lumberyard collect bubble
-local LUMBER_X, LUMBER_Y       = 290, 600
--- Herb Garden collect bubble
-local HERB_X, HERB_Y           = 130, 610
--- Pharmacy collect bubble
-local PHARMACY_X, PHARMACY_Y   = 207, 370
+-- -------------------------------------------------------------------------
+-- Resource building collect bubbles
+-- These float above the building when production is full.
+-- -------------------------------------------------------------------------
 
--- Scavenge / World Map button (bottom navigation)
-local SCAVENGE_BTN_X, SCAVENGE_BTN_Y = 78, 815
+-- Grain Farm bubble  (left-center of base, bubble appears above rooftop)
+local FARM_X, FARM_Y           = 232, 600
+-- Lumberyard bubble  (right-center of base)
+local LUMBER_X, LUMBER_Y       = 325, 673
+-- Herb Garden bubble (left side of base)
+local HERB_X, HERB_Y           = 146, 685
+-- Pharmacy / Apothecary bubble (upper-center of base)
+local PHARMACY_X, PHARMACY_Y   = 232, 415
 
--- Biome selection — these are the centres of the biome cards
-local BIOME_FOREST_X, BIOME_FOREST_Y = 100, 450
-local BIOME_PLAINS_X, BIOME_PLAINS_Y = 200, 450
-local BIOME_RUINS_X,  BIOME_RUINS_Y  = 300, 450
+-- -------------------------------------------------------------------------
+-- Navigation bar  (row of icons at the very bottom, Y ≈ 915)
+-- Five-icon bar — centres from left: 44, 132, 220, 308, 396
+-- -------------------------------------------------------------------------
 
--- "Send Party" confirm button
-local SEND_X, SEND_Y = 196, 750
+-- World Map / Scavenge button (2nd tab from left)
+local SCAVENGE_BTN_X, SCAVENGE_BTN_Y = 87, 915
+-- Quests / Missions tab (4th tab from left)
+local QUESTS_TAB_X, QUESTS_TAB_Y     = 353, 915
 
--- Hospital button
-local HOSPITAL_X, HOSPITAL_Y = 196, 370
+-- -------------------------------------------------------------------------
+-- Scavenge screen — biome card centres (three cards across the screen)
+-- -------------------------------------------------------------------------
+local BIOME_FOREST_X, BIOME_FOREST_Y = 112, 505
+local BIOME_PLAINS_X, BIOME_PLAINS_Y = 224, 505
+local BIOME_RUINS_X,  BIOME_RUINS_Y  = 336, 505
 
--- "Collect Healed" / "Collect All" button inside hospital
-local COLLECT_HEALED_X, COLLECT_HEALED_Y = 196, 550
+-- Party dispatch confirm ("Send" / "Go") — center-bottom of the popup
+local SEND_X, SEND_Y = 220, 842
 
--- "Admit Patient" button inside hospital
-local ADMIT_X, ADMIT_Y = 196, 620
+-- -------------------------------------------------------------------------
+-- Hospital / Sanctuary
+-- -------------------------------------------------------------------------
 
--- Daily quests tab
-local QUESTS_TAB_X, QUESTS_TAB_Y = 315, 815
+-- Hospital building tap (upper-center of base)
+local HOSPITAL_X, HOSPITAL_Y = 220, 415
+-- "Collect All" or individual healed-patient collect button
+local COLLECT_HEALED_X, COLLECT_HEALED_Y = 220, 617
+-- "Admit Patient" button inside the hospital panel
+local ADMIT_X, ADMIT_Y = 220, 696
 
--- "Claim All" quest button
-local CLAIM_ALL_X, CLAIM_ALL_Y = 340, 200
+-- -------------------------------------------------------------------------
+-- Quest panel
+-- -------------------------------------------------------------------------
 
--- Generic close / back button (top-left)
-local CLOSE_X, CLOSE_Y = 30, 55
+-- "Claim All" button inside the quest panel (upper-right of list)
+local CLAIM_ALL_X, CLAIM_ALL_Y = 381, 224
 
--- Login reward — tapping the screen dismisses/claims it
-local LOGIN_CLAIM_X, LOGIN_CLAIM_Y = 196, 500
+-- -------------------------------------------------------------------------
+-- Common / shared
+-- -------------------------------------------------------------------------
+
+-- Generic close / back button — top-left of any popup (below Dynamic Island)
+local CLOSE_X, CLOSE_Y = 34, 62
+
+-- Daily login reward popup — tap centre to claim
+local LOGIN_CLAIM_X, LOGIN_CLAIM_Y = 220, 561
+
+-- Returned-party base Y position in scavenge screen (spaced by 75 pts)
+local PARTY_LIST_X   = 220
+local PARTY_LIST_Y0  = 449   -- first returned-party slot
+local PARTY_LIST_DY  = 75    -- vertical gap between slots
 
 -- =========================================================================
 -- HELPERS
@@ -126,10 +146,9 @@ local function run_scavenge()
     tap(SCAVENGE_BTN_X, SCAVENGE_BTN_Y)
     long_sleep()
 
-    -- Collect any returned parties first
-    -- (Tap the area where returned party indicators appear — adjust as needed)
-    for i = 1, 3 do
-        tap(196, 400 + i * 60)
+    -- Collect any returned parties (up to 3 slots visible at once)
+    for i = 0, 2 do
+        tap(PARTY_LIST_X, PARTY_LIST_Y0 + i * PARTY_LIST_DY)
         short_sleep()
         close_panel()
     end
@@ -162,7 +181,7 @@ local function run_hospital()
     for i = 1, 5 do
         tap(ADMIT_X, ADMIT_Y)
         short_sleep()
-        -- Confirm selection popup if present
+        -- Confirm any patient-selection popup that appears
         tap(SEND_X, SEND_Y)
         short_sleep()
     end
